@@ -1,4 +1,4 @@
-package com.sgursoy.race_condition;
+package com.sgursoy.racecondition;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

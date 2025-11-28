@@ -1,4 +1,4 @@
-package com.sgursoy.race_condition;
+package com.sgursoy.racecondition;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
