@@ -2,15 +2,19 @@ package com.sgursoy.racecondition.repository.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "reservations")
-@Builder
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reservation {
 
   @Id
@@ -38,12 +42,10 @@ public class Reservation {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", columnDefinition = "ENUM('ACTIVE', 'CONFIRMED', 'EXPIRED', 'CANCELLED')")
+  @Builder.Default
   private ReservationStatus status = ReservationStatus.ACTIVE; // Maps to ENUM('ACTIVE', ...)
 
   @Column(name = "created_at", nullable = false)
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
-
-  public Reservation() {
-
-  }
 }

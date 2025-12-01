@@ -3,13 +3,15 @@ package com.sgursoy.racecondition.repository.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "seats", uniqueConstraints = {
-    @UniqueConstraint(name = "uk_event_seat", columnNames = {"event_id", "seat_number"})
+    @UniqueConstraint(name = "uk_event_seat", columnNames = { "event_id", "seat_number" })
 }, indexes = {
     @Index(name = "idx_event_status", columnList = "event_id, status"),
     @Index(name = "idx_reserved_until", columnList = "reserved_until")
@@ -17,6 +19,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Seat {
 
   @Id
@@ -39,6 +43,7 @@ public class Seat {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "seat_type", columnDefinition = "ENUM('REGULAR', 'VIP', 'PREMIUM')")
+  @Builder.Default
   private SeatType seatType = SeatType.REGULAR; // Maps to ENUM
 
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
@@ -46,10 +51,12 @@ public class Seat {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", columnDefinition = "ENUM('AVAILABLE', 'RESERVED', 'BOOKED', 'BLOCKED')")
+  @Builder.Default
   private SeatStatus status = SeatStatus.AVAILABLE; // Maps to ENUM
 
   @Version // JPA's annotation for optimistic locking
   @Column(name = "version")
+  @Builder.Default
   private Long version = 0L;
 
   @Column(name = "reserved_by", length = 50)
@@ -62,9 +69,6 @@ public class Seat {
   private Long bookingId; // Foreign key placeholder, often better handled through a relationship
 
   @Column(name = "created_at", nullable = false)
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
-
-  public Seat() {
-
-  }
 }

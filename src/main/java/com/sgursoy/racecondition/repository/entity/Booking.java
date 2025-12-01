@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -13,6 +15,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
 
   @Id
@@ -32,6 +36,7 @@ public class Booking {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", columnDefinition = "ENUM('PENDING', 'CONFIRMED', 'CANCELLED', 'FAILED')")
+  @Builder.Default
   private BookingStatus status = BookingStatus.PENDING; // Maps to ENUM('PENDING', ...)
 
   @Column(name = "payment_id", length = 100)
@@ -39,12 +44,14 @@ public class Booking {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "payment_status", columnDefinition = "ENUM('PENDING', 'SUCCESS', 'FAILED')")
+  @Builder.Default
   private PaymentStatus paymentStatus = PaymentStatus.PENDING; // Maps to ENUM('PENDING', ...)
 
   @Column(name = "booking_reference", nullable = false, unique = true, length = 50)
   private String bookingReference;
 
   @Column(name = "created_at", nullable = false)
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
 
   @Column(name = "confirmed_at")
@@ -53,10 +60,6 @@ public class Booking {
   // Relationship: One Booking has many BookingSeats
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BookingSeat> bookingSeats;
-
-  public Booking() {
-
-  }
 
   // --- Enum Definitions for Status Fields ---
   public enum BookingStatus {
@@ -67,5 +70,4 @@ public class Booking {
     PENDING, SUCCESS, FAILED
   }
 
-  // --- Constructors, Getters, and Setters (omitted for brevity) ---
 }

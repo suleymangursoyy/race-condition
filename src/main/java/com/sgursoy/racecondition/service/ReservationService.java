@@ -18,6 +18,6 @@ public class ReservationService {
 
   public Reservation createReservation(String userId, Seat seat, Event event, LocalDateTime reservationTime) {
     return reservationRepository.save(
-        new Reservation().builder().userId(userId).seat(seat).event(event).expiresAt(reservationTime).build());
+        Reservation.builder().userId(userId).seat(seat).event(event).expiresAt(reservationTime).build());
   }
 }

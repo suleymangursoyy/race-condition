@@ -2,17 +2,21 @@ package com.sgursoy.racecondition.repository.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "booking_seats", uniqueConstraints = {
-    @UniqueConstraint(name = "uk_booking_seat", columnNames = {"booking_id", "seat_id"})
+    @UniqueConstraint(name = "uk_booking_seat", columnNames = { "booking_id", "seat_id" })
 })
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookingSeat {
 
   @Id
@@ -31,10 +35,4 @@ public class BookingSeat {
 
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
   private BigDecimal price;
-
-  public BookingSeat() {
-
-  }
-
-  // --- Constructors, Getters, and Setters (omitted for brevity) ---
 }

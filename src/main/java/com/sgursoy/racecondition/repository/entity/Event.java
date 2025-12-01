@@ -3,8 +3,10 @@ package com.sgursoy.racecondition.repository.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -15,6 +17,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Event {
 
   @Id
@@ -38,19 +42,17 @@ public class Event {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", columnDefinition = "ENUM('UPCOMING', 'ON_SALE', 'SOLD_OUT', 'CANCELLED')")
+  @Builder.Default
   private EventStatus status = EventStatus.UPCOMING; // Maps to ENUM
 
   @Column(name = "sale_start_time")
   private LocalDateTime saleStartTime;
 
   @Column(name = "created_at", nullable = false)
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
 
   // Relationship: One Event has many Seats
   @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Seat> seats;
-
-  public Event() {
-
-  }
 }
