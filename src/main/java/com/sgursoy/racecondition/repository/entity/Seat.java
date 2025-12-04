@@ -3,6 +3,10 @@ package com.sgursoy.racecondition.repository.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.sgursoy.racecondition.repository.entity.enums.SeatStatus;
+import com.sgursoy.racecondition.repository.entity.enums.SeatType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

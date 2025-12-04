@@ -2,6 +2,9 @@ package com.sgursoy.racecondition.repository.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import com.sgursoy.racecondition.repository.entity.enums.ReservationStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

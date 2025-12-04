@@ -23,7 +23,7 @@ public class TicketingController {
   }
 
   @GetMapping("pessimistic-locking")
-  public ResponseEntity<SeatReservationResponse> ticketingByPessimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
+  public ResponseEntity<SeatReservationResponse> ticketingWithPessimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
     SeatReservationResponse response = ticketingService.makeReservationForUserWithPessimisticLocking(request);
     if(Objects.nonNull(response.getErrorCode())){
       return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(response);
@@ -31,6 +31,14 @@ public class TicketingController {
     return ResponseEntity.status(OK).body(response);
   }
 
+  @GetMapping("optimistic-locking")
+  public ResponseEntity<SeatReservationResponse> ticketingWithOptimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
+    SeatReservationResponse response = ticketingService.makeReservationForUserWithOptimisticLocking(request);
+    if(Objects.nonNull(response.getErrorCode())){
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(response);
+    }
+    return ResponseEntity.status(OK).body(response);
+  }
 
 
 }

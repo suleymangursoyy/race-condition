@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.sgursoy.racecondition.repository.entity.enums.BookingStatus;
+import com.sgursoy.racecondition.repository.entity.enums.PaymentStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,14 +64,5 @@ public class Booking {
   // Relationship: One Booking has many BookingSeats
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BookingSeat> bookingSeats;
-
-  // --- Enum Definitions for Status Fields ---
-  public enum BookingStatus {
-    PENDING, CONFIRMED, CANCELLED, FAILED
-  }
-
-  public enum PaymentStatus {
-    PENDING, SUCCESS, FAILED
-  }
 
 }

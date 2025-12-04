@@ -6,15 +6,19 @@ import com.sgursoy.racecondition.repository.entity.Event;
 import com.sgursoy.racecondition.repository.entity.Seat;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sgursoy.racecondition.repository.entity.SeatStatus.AVAILABLE;
-import static com.sgursoy.racecondition.repository.entity.SeatStatus.RESERVED;
+import static com.sgursoy.racecondition.repository.entity.enums.SeatStatus.AVAILABLE;
+import static com.sgursoy.racecondition.repository.entity.enums.SeatStatus.RESERVED;
 import static com.sgursoy.racecondition.service.ErrorCodes.EVENT_NOT_FOUND;
 
 @Service
 public class TicketingService {
+
+  private final static Integer ZERO = 0;
 
   private final SeatService seatService;
 
@@ -34,15 +38,15 @@ public class TicketingService {
   public SeatReservationResponse makeReservationForUserWithPessimisticLocking(SeatReservationRequest request) {
     SeatReservationResponse response = new SeatReservationResponse();
     Event event = eventService.getEventById(request.getEventId());
-    if(Objects.isNull(event)) {
+    if (Objects.isNull(event)) {
       return response.setErrorCode(EVENT_NOT_FOUND);
     }
     Seat seat = seatService.getSeatByEventIdAndSeatIdWithPessimisticLocking(request.getEventId(),
-                                                                            request.getSeatNumber()).get();
+        request.getSeatNumber()).get();
     if (Objects.isNull(seat)) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
     }
-    if(!AVAILABLE.equals(seat.getStatus())){
+    if (!AVAILABLE.equals(seat.getStatus())) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
     }
 
@@ -51,9 +55,39 @@ public class TicketingService {
     seat.setReservedBy(request.getUserId());
     seat.setReservedUntil(reservationTime);
     seatService.save(seat);
+    
+    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime).getReservationId();
+    response.setReservationId(reservationId);
+    response.setSeatId(seat.getSeatId());
 
-    reservationService.createReservation(request.getUserId(), seat, event, reservationTime);
     return response;
   }
 
+  @Transactional
+  public SeatReservationResponse makeReservationForUserWithOptimisticLocking(SeatReservationRequest request) {
+    SeatReservationResponse response = new SeatReservationResponse();
+    Event event = eventService.getEventById(request.getEventId());
+    if (Objects.isNull(event)) {
+      return response.setErrorCode(EVENT_NOT_FOUND);
+    }
+    Seat seat = seatService.getSeatByEventIdAndSeatIdWithOptimisticLocking(request.getEventId(),
+        request.getSeatNumber()).get();
+    if (Objects.isNull(seat)) {
+      return response.setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
+    }
+    if (!AVAILABLE.equals(seat.getStatus())) {
+      return response.setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
+    }
+
+    reservationTime = LocalDateTime.now().plusMinutes(10);
+    Integer updatedSeat = seatService.updateSeatStatusWithVersion(seat.getSeatId(), reservationTime, seat.getVersion(), RESERVED);
+    if (ZERO.equals(updatedSeat)) {
+      return response.setErrorCode(ErrorCodes.CONCURRENT_MODIFICATION);
+    }
+
+    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime).getReservationId();
+    response.setReservationId(reservationId);
+    response.setSeatId(seat.getSeatId());
+    return response;
+  }
 }

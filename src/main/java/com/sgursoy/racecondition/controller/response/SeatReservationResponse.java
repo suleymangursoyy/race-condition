@@ -1,13 +1,14 @@
 package com.sgursoy.racecondition.controller.response;
 
-import com.sgursoy.racecondition.repository.entity.Seat;
 import com.sgursoy.racecondition.service.ErrorCodes;
 
 public class SeatReservationResponse {
 
   private ErrorCodes errorCode;
 
-  private Seat seat;
+  private Long seatId;
+
+  private Long reservationId;
 
   public ErrorCodes getErrorCode() {
     return errorCode;
@@ -18,12 +19,21 @@ public class SeatReservationResponse {
     return this;
   }
 
-  public Seat getSeat() {
-    return seat;
+  public Long getSeatId() {
+    return seatId;
   }
 
-  public SeatReservationResponse setSeat(Seat seat) {
-    this.seat = seat;
+  public SeatReservationResponse setSeatId(Long seatId) {
+    this.seatId = seatId;
+    return this;
+  }
+
+  public Long getReservationId() {
+    return reservationId;
+  }
+
+  public SeatReservationResponse setReservationId(Long reservationId) {
+    this.reservationId = reservationId;
     return this;
   }
 }
