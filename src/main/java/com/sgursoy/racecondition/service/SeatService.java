@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class SeatService {
 
@@ -30,7 +29,9 @@ public class SeatService {
     seatRepository.save(seat);
   }
 
-  public Integer updateSeatStatusWithVersion(Long seatId, LocalDateTime reservationTime, Long version, SeatStatus status) {
-    return seatRepository.updateSeatStatusWithVersion(seatId, reservationTime.toString(), version, status.name());
+  public Integer updateSeatStatusWithVersion(Long seatId, LocalDateTime reservationTime, String reservedBy,
+      Long version,
+      SeatStatus status) {
+    return seatRepository.updateSeatStatusWithVersion(seatId, reservationTime, reservedBy, version, status);
   }
 }

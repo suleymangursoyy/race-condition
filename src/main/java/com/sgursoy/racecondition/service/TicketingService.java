@@ -41,11 +41,12 @@ public class TicketingService {
     if (Objects.isNull(event)) {
       return response.setErrorCode(EVENT_NOT_FOUND);
     }
-    Seat seat = seatService.getSeatByEventIdAndSeatIdWithPessimisticLocking(request.getEventId(),
-        request.getSeatNumber()).get();
-    if (Objects.isNull(seat)) {
+    Optional<Seat> seatOptional = seatService.getSeatByEventIdAndSeatIdWithPessimisticLocking(request.getEventId(),
+        request.getSeatNumber());
+    if (seatOptional.isEmpty()) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
     }
+    Seat seat = seatOptional.get();
     if (!AVAILABLE.equals(seat.getStatus())) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
     }
@@ -55,8 +56,9 @@ public class TicketingService {
     seat.setReservedBy(request.getUserId());
     seat.setReservedUntil(reservationTime);
     seatService.save(seat);
-    
-    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime).getReservationId();
+
+    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime)
+        .getReservationId();
     response.setReservationId(reservationId);
     response.setSeatId(seat.getSeatId());
 
@@ -70,22 +72,25 @@ public class TicketingService {
     if (Objects.isNull(event)) {
       return response.setErrorCode(EVENT_NOT_FOUND);
     }
-    Seat seat = seatService.getSeatByEventIdAndSeatIdWithOptimisticLocking(request.getEventId(),
-        request.getSeatNumber()).get();
-    if (Objects.isNull(seat)) {
+    Optional<Seat> seatOptional = seatService.getSeatByEventIdAndSeatIdWithOptimisticLocking(request.getEventId(),
+        request.getSeatNumber());
+    if (seatOptional.isEmpty()) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
     }
+    Seat seat = seatOptional.get();
     if (!AVAILABLE.equals(seat.getStatus())) {
       return response.setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
     }
 
     reservationTime = LocalDateTime.now().plusMinutes(10);
-    Integer updatedSeat = seatService.updateSeatStatusWithVersion(seat.getSeatId(), reservationTime, seat.getVersion(), RESERVED);
+    Integer updatedSeat = seatService.updateSeatStatusWithVersion(seat.getSeatId(), reservationTime, request.getUserId(),
+        seat.getVersion(), RESERVED);
     if (ZERO.equals(updatedSeat)) {
       return response.setErrorCode(ErrorCodes.CONCURRENT_MODIFICATION);
     }
 
-    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime).getReservationId();
+    Long reservationId = reservationService.createReservation(request.getUserId(), seat, event, reservationTime)
+        .getReservationId();
     response.setReservationId(reservationId);
     response.setSeatId(seat.getSeatId());
     return response;
