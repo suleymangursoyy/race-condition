@@ -2,7 +2,7 @@ package com.sgursoy.racecondition.controller;
 
 import com.sgursoy.racecondition.controller.request.SeatReservationRequest;
 import com.sgursoy.racecondition.controller.response.SeatReservationResponse;
-import com.sgursoy.racecondition.service.TicketingService;
+import com.sgursoy.racecondition.service.ReservationService;
 import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
-@RestController("ticketing")
-public class TicketingController {
+@RestController("reservation/")
+public class ReservationController {
 
-  private final TicketingService ticketingService;
+  private final ReservationService reservationService;
 
-  public TicketingController(TicketingService ticketingService) {
-    this.ticketingService = ticketingService;
+  public ReservationController(ReservationService reservationService) {
+    this.reservationService = reservationService;
   }
 
   @GetMapping("pessimistic-locking")
-  public ResponseEntity<SeatReservationResponse> ticketingWithPessimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
-    SeatReservationResponse response = ticketingService.makeReservationForUserWithPessimisticLocking(request);
+  public ResponseEntity<SeatReservationResponse> reservationWithPessimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
+    SeatReservationResponse response = reservationService.makeReservationForUserWithPessimisticLocking(request);
     if(Objects.nonNull(response.getErrorCode())){
       return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(response);
     }
@@ -32,8 +32,8 @@ public class TicketingController {
   }
 
   @GetMapping("optimistic-locking")
-  public ResponseEntity<SeatReservationResponse> ticketingWithOptimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
-    SeatReservationResponse response = ticketingService.makeReservationForUserWithOptimisticLocking(request);
+  public ResponseEntity<SeatReservationResponse> reservationWithOptimisticLocking(@Validated @RequestBody SeatReservationRequest request) {
+    SeatReservationResponse response = reservationService.makeReservationForUserWithOptimisticLocking(request);
     if(Objects.nonNull(response.getErrorCode())){
       return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(response);
     }

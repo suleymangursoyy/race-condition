@@ -1,11 +1,10 @@
 package com.sgursoy.racecondition.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sgursoy.racecondition.controller.TicketingController;
 import com.sgursoy.racecondition.controller.request.SeatReservationRequest;
 import com.sgursoy.racecondition.controller.response.SeatReservationResponse;
 import com.sgursoy.racecondition.service.ErrorCodes;
-import com.sgursoy.racecondition.service.TicketingService;
+import com.sgursoy.racecondition.service.ReservationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,21 +23,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("TicketingController Tests")
-public class TicketingControllerTest {
+@DisplayName("ReservationController Tests")
+public class ReservationControllerTest {
 
     @Mock
-    private TicketingService ticketingService;
+    private ReservationService reservationService;
 
     @InjectMocks
-    private TicketingController ticketingController;
+    private ReservationController reservationController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(ticketingController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(reservationController).build();
         objectMapper = new ObjectMapper();
     }
 
@@ -58,7 +57,7 @@ public class TicketingControllerTest {
                 .setSeatId(100L)
                 .setReservationId(200L);
 
-        when(ticketingService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -84,7 +83,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.EVENT_NOT_FOUND);
 
-        when(ticketingService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -108,7 +107,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
 
-        when(ticketingService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -132,7 +131,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
 
-        when(ticketingService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithPessimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -159,7 +158,7 @@ public class TicketingControllerTest {
                 .setSeatId(150L)
                 .setReservationId(250L);
 
-        when(ticketingService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -185,7 +184,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.EVENT_NOT_FOUND);
 
-        when(ticketingService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -209,7 +208,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.SEAT_NOT_FOUND);
 
-        when(ticketingService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -233,7 +232,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.SEAT_NOT_AVAILABLE);
 
-        when(ticketingService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert
@@ -257,7 +256,7 @@ public class TicketingControllerTest {
         SeatReservationResponse response = new SeatReservationResponse()
                 .setErrorCode(ErrorCodes.CONCURRENT_MODIFICATION);
 
-        when(ticketingService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
+        when(reservationService.makeReservationForUserWithOptimisticLocking(any(SeatReservationRequest.class)))
                 .thenReturn(response);
 
         // Act & Assert

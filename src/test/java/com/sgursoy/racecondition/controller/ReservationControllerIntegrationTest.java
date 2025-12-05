@@ -36,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@DisplayName("TicketingController Integration Tests")
-public class TicketingControllerIntegrationTest {
+@DisplayName("ReservationController Integration Tests")
+public class ReservationControllerIntegrationTest {
 
     private MockMvc mockMvc;
 
